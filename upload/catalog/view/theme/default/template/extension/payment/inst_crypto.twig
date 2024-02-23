@@ -1,0 +1,38 @@
+<style>
+    #new_iframe {display: none}
+</style>
+<div class="buttons">
+    <div style="text-align: end">
+        <input type="button" value="{{ button_confirm }}" id="button-confirm" class="btn btn-primary" />
+    </div>
+    <iframe
+            height='795' width=100% frameBorder='0' id="new_iframe">
+    </iframe>
+</div>
+<script type="text/javascript">
+    $('#button-confirm').bind('click', function() {
+        $.ajax({
+            url: 'index.php?route=extension/payment/inst_crypto/confirm',
+            dataType: 'json',
+            success: function(data, textStatus, request) {
+                // console.log(JSON.stringify(data));
+                if (data['code'] === 0) {
+                    // console.log(data['result']['redirect_url']);
+                    // console.log("success");
+                    // location = data['result']['redirect_url'];
+                    // window.open(data['result']['redirect_url'])
+                    // window.location.href = data['result']['redirect_url']
+                    if (request.getResponseHeader('iframe') === '1') {
+                        document.getElementById("new_iframe").src = data['result']['redirect_url'] + '&embedded=true'
+                        document.getElementById("new_iframe").style.display = 'inline'
+                    } else {
+                        window.open(data['result']['redirect_url'], "_blank")
+                    }
+                }
+            },
+            error:function(){
+                alert("Confirm error");
+            }
+        });
+    });
+</script>
